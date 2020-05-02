@@ -164,7 +164,7 @@ void loop() {
       delay(1);
       int anim5 = (x/10)%2;
       LCD_Sprite(contmov2,168,18,38,mov2,2,anim5,0,0);
-      V_line( contmov2 -1, 160, 45, 0x3E19);  
+      V_line( contmov2 +18, 160, 45, 0x3E19);  
     }
   }else{
   }
@@ -175,7 +175,7 @@ void loop() {
       delay(1);
       int anim6 = (x/10)%2;
       LCD_Sprite(contmov2,168,18,38,mov2,2,anim6,0,0);
-      V_line( contmov2 +1, 160, 45, 0x3E19); 
+      V_line( contmov2 -1, 160, 45, 0x3E19); 
     }
   }else{
   }
