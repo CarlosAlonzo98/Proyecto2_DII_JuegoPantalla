@@ -30,6 +30,21 @@
 #define LCD_WR PD_3
 #define LCD_RD PE_1
 int DPINS[] = {PB_0, PB_1, PB_2, PB_3, PB_4, PB_5, PB_6, PB_7};  
+
+const int buttonPin1 = PUSH1;   //ataque
+const int buttonPin2 = PUSH2;   //ataque
+const int buttonPin3 = PA_2;
+const int buttonPin4 = PA_3;
+const int buttonPin5 = PA_4;
+const int buttonPin6 = PA_5;
+const int buttonPin7 = PA_7;
+const int buttonPin8 = PC_4;
+const int buttonPin9 = PC_5;
+const int buttonPin10 = PC_6;
+
+
+int contmov1 = 50;
+int contmov2 = 250;
 //***************************************************************************************************************************************
 // Functions Prototypes
 //***************************************************************************************************************************************
@@ -57,79 +72,124 @@ void setup() {
   //Serial.println("Inicio");
   
   LCD_Init();
-  LCD_Clear(0x0F);
+  LCD_Clear(0x3E19);
   
-  //FillRect(0, 0, 319, 206, 0x421b);
-  //String text1 = "Super Mario World!";
-  //LCD_Print(text1, 20, 100, 2, 0xffff, 0x421b);
+  FillRect(0, 0, 319, 206, 0x421b);
+  String text1 = "PROYECTO 2!";
+  LCD_Print(text1, 20, 100, 2, 0xffff, 0x421b);
+  String text2 = "Alex Maas";
+  LCD_Print(text2, 20, 120, 2, 0xffff, 0x421b);
+  String text3 = "Carlos Alonzo";
+  LCD_Print(text3, 20, 140, 2, 0xffff, 0x421b);
+  delay (1000);
+  LCD_Clear(0x3E19);
+  
+  
+  
 //LCD_Sprite(int x, int y, int width, int height, unsigned char bitmap[],int columns, int index, char flip, char offset);
+//LCD_Sprite(50, 100, 18, 38, mov,2, 1, 1, 0);
     
   //LCD_Bitmap(unsigned int x, unsigned int y, unsigned int width, unsigned int height, unsigned char bitmap[]);
-  LCD_Bitmap(50, 50, 180, 36, boxeador1);
-  //LCD_Sprite(50, 150, 30, 36, boxeador1,6, 3, 1, 0);
+  //LCD_Bitmap(50, 160, 18, 38, inicio);
+ 
   
- /* for(int x = 0; x <319; x++){
-    LCD_Bitmap(x, 52, 16, 16, tile2);
-    LCD_Bitmap(x, 68, 16, 16, tile);
+  for(int x = 0; x <319; x++){
+    //LCD_Bitmap(x, 52, 16, 16, tile2);
+    //LCD_Bitmap(x, 68, 16, 16, tile);
     
     LCD_Bitmap(x, 207, 16, 16, tile);
     LCD_Bitmap(x, 223, 16, 16, tile);
     x += 15;
- }*/
+ }
+ pinMode(buttonPin1, INPUT_PULLUP);
+ pinMode(buttonPin2, INPUT_PULLUP);
+ pinMode(buttonPin3, INPUT_PULLUP);
+ pinMode(buttonPin4, INPUT_PULLUP);
+ pinMode(buttonPin5, INPUT_PULLUP);
+ pinMode(buttonPin6, INPUT_PULLUP);
+ pinMode(buttonPin7, INPUT_PULLUP);
+ pinMode(buttonPin8, INPUT_PULLUP);
+ pinMode(buttonPin9, INPUT_PULLUP);
+ pinMode(buttonPin10, INPUT_PULLUP);
   
 }
 //***************************************************************************************************************************************
 // Loop Infinito
 //***************************************************************************************************************************************
 void loop() {
-  for(int x = 0; x <320; x++){
-    delay(15);
-    int anim2 = (x/10)%6;
-    
-    LCD_Sprite(x,150,30,36,boxeador1,6,anim2,1,0);
-    V_line( x -1, 150, 36, 0x3E19); //0x421b);
-/*
-    //LCD_Bitmap(x, 100, 32, 32, prueba);
-    
-    int anim = (x/11)%8;
-    
-
-    int anim3 = (x/11)%4;
-    
-    LCD_Sprite(x, 20, 16, 32, mario,8, anim,1, 0);
-    V_line( x -1, 20, 32, 0x421b);
- 
-    //LCD_Sprite(x,100,32,32,bowser,4,anim3,0,1);
-    //V_line( x -1, 100, 32, 0x421b);
- 
- 
-    LCD_Sprite(x, 140, 16, 16, enemy,2, anim2,1, 0);
-    V_line( x -1, 140, 16, 0x421b);
-  
-    LCD_Sprite(x, 175, 16, 32, luigi,8, anim,1, 0);
-    V_line( x -1, 175, 32, 0x421b);
+  int boton1 = digitalRead(buttonPin1);
+  int boton2 = digitalRead(buttonPin2);
+  int boton3 = digitalRead(buttonPin3);
+  int boton4 = digitalRead(buttonPin4);
+  int boton5 = digitalRead(buttonPin5);
+  int boton6 = digitalRead(buttonPin6);
+  int boton7 = digitalRead(buttonPin7);
+  int boton8 = digitalRead(buttonPin8);
+  int boton9 = digitalRead(buttonPin9);
+  int boton10 = digitalRead(buttonPin10);
+//------------------Jugador1---------------------------------------------------  
+  if(boton3 ==0){
+    contmov1 = contmov1 + 1;
+    for(int x = 50; x <68; x++){
+      delay(1);
+      int anim1 = (x/10)%2;
+      LCD_Sprite(contmov1,168,18,38,mov,2,anim1,0,0);
+      V_line( contmov1 -1, 160, 45, 0x3E19);
+    }  
+  }else{
   }
-  for(int x = 320-32; x >0; x--){
-    delay(5);
-    int anim = (x/11)%8;
-    int anim2 = (x/11)%2;
-    
-    LCD_Sprite(x,100,16,24,planta,2,anim2,0,0);
-    V_line( x + 16, 100, 24, 0x421b);
-    
-    //LCD_Bitmap(x, 100, 32, 32, prueba);
-    
-    //LCD_Sprite(x, 140, 16, 16, enemy,2, anim2,0, 0);
-    //V_line( x + 16, 140, 16, 0x421b);
-    
-    //LCD_Sprite(x, 175, 16, 32, luigi,8, anim,0, 0);
-    //V_line( x + 16, 175, 32, 0x421b);
+  if(boton4==0){
+    contmov1 = contmov1-1;
+    for (int x = 50; x<68; x++){
+      delay(1);
+      int anim2 = (x/10)%2;
+      LCD_Sprite(contmov1,168,18,38,mov,2,anim2,0,0);
+      V_line( contmov1 +1, 160, 45, 0x3E19);
+    }
+  }else{
+  }
+  if(boton1 ==0){
+    for(int x = 50; x <100; x++){
+      delay(1);
+      int anim3 = (x/10)%4;
+      LCD_Sprite(contmov1,168,33,39,attack,4,anim3,0,0);
+      V_line( contmov1 -1, 160, 45, 0x3E19);
+    }  
+  }else{ 
+  }
+//---------------------------------Jugador2---------------------------------------------------    
+  if(boton6==0){
+    contmov2 = contmov2 - 1;
+    for (int x = 250; x <300; x++){
+      delay(1);
+      int anim5 = (x/10)%2;
+      LCD_Sprite(contmov2,168,18,38,mov2,2,anim5,0,0);
+      V_line( contmov2 -1, 160, 45, 0x3E19);  
+    }
+  }else{
+  }
+  
+  if(boton7==0){
+    contmov2 = contmov2+1;
+    for (int x = 250; x <300; x++){
+      delay(1);
+      int anim6 = (x/10)%2;
+      LCD_Sprite(contmov2,168,18,38,mov2,2,anim6,0,0);
+      V_line( contmov2 +1, 160, 45, 0x3E19); 
+    }
+  }else{
+  }
+  
+  if(boton2 ==0){
+    for(int x = 250; x <300; x++){
+      delay(1);
+      int anim6 = (x/10)%4;
+      LCD_Sprite(contmov2,168,33,39,attack2,4,anim6,0,0);
+      V_line( contmov2 -1, 160, 45, 0x3E19);
+    }  
+  }else{ 
+  }
 
-    //LCD_Sprite(x, 20, 16, 32, mario,8, anim,0, 0);
-    //V_line( x + 16, 20, 32, 0x421b);
-  } */
-
-}
 }
 //***************************************************************************************************************************************
 // Función para inicializar LCD
