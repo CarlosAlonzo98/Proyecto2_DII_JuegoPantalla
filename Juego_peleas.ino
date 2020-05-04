@@ -46,6 +46,7 @@ const int buttonPin10 = PC_6;
 int contmov1 = 50;
 int contmov2 = 250;
 bool defensa = true;
+bool defensa2 = true;
 bool def1 = false;
 bool def2 = false;
 int golpes1 = 0;
@@ -74,6 +75,7 @@ extern uint8_t defense[];
 extern uint8_t mov2[];
 extern uint8_t attack2[];
 extern uint8_t attackspecial2[];
+extern uint8_t defense2[];
 
 //***************************************************************************************************************************************
 // Inicialización
@@ -241,6 +243,7 @@ void loop() {
     def1 = false;
   }
   //---------------------------------Jugador2----------------*****************************************************************************************************
+//-----------------------------------------------caminar hacia adelante J2 ----------------------------
   if (boton6 == 0) {
     if (contmov2 > contmov1 + 18) {
       contmov2 = contmov2 - 1;
@@ -256,7 +259,7 @@ void loop() {
     }
   } else {
   }
-
+// ---------------------------------------------------- caminar hacia atras J2------------------------------------------------
   if (boton7 == 0) {
     if (contmov2 == 301) {
       contmov2 = contmov2;
@@ -271,21 +274,64 @@ void loop() {
     }
   } else {
   }
-
+// --------------------------------------------- ataque J2 -------------------------------------------------------------------
   if (boton2 == 0) {
     if (contmov2 < contmov1 + 18 && def1 == false) {
       golpes2 = golpes2 + 1;
-    }
+      if(golpes2 == 1){
+        String g7 = "1";
+        LCD_Print(g7, 210, 75, 2, 0xffff, 0x421b);
+      }
+      if(golpes2 ==2){
+        String g8 = "2";
+        LCD_Print(g8, 210, 75, 2, 0xffff, 0x421b);
+      }
+      if(golpes2 ==3){
+        String g9= "3";
+        LCD_Print(g9, 210, 75, 2, 0xffff, 0x421b);
+      }
+      if(golpes2 ==4){
+        String g10 = "4";
+        LCD_Print(g10, 210, 75, 2, 0xffff, 0x421b);
+      }
+      if(golpes2 ==5){
+        String g11= "5";
+        LCD_Print(g11, 210, 75, 2, 0xffff, 0x421b);
+      }else{
+        //String g6 ="0";
+        //LCD_Print(g6, 80, 75, 2, 0xffff, 0x421b);
+      }
+    }  
     for (int x = 250; x < 300; x++) {
       delay(1);
-      int anim6 = (x / 10) % 4;
-      LCD_Sprite(contmov2, 168, 33, 39, attack2, 4, anim6, 0, 0);
+      int anim7 = (x / 10) % 4;
+      LCD_Sprite(contmov2, 168, 33, 39, attack2, 4, anim7, 0, 0);
       V_line( contmov2 - 1, 160, 45, 0x3E19);
     }
   } else {
   }
+// ------------------------------------------------- defensa J2 ------------------------------------------------------------------------
+  if (boton8 == 0 && defensa2 == true) {
+    def2 = true;
+    for (int x = 0; x < 30; x++) {
+      delay(1);
+      int anim8 = (x / 10) % 12;
+      LCD_Sprite(contmov2 , 168, 28, 38, defense2, 9, anim8, 1, 0);
+      V_line( contmov2 - 1, 160, 45, 0x3E19);
+    }
+    defensa2 = false;
+  }
+  if (boton8 == 0 && defensa2 == false) {
+    LCD_Sprite(contmov2, 168, 28, 38, defense2, 9, 8, 1, 0);
+    V_line( contmov2 - 1, 160, 45, 0x3E19);
+  }
+  else {
+    defensa2 = true;
+    def2 = false;
+  }
 
 }
+
 //***************************************************************************************************************************************
 // Función para inicializar LCD
 //***************************************************************************************************************************************
