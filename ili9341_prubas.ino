@@ -24,6 +24,10 @@
 #include "font.h"
 #include "lcd_registers.h"
 
+#include <SPI.h>
+#include <SD.h>
+File myFile;
+
 #define note_cc 261
 #define note_dd 294
 #define note_ee 329
@@ -60,17 +64,14 @@ void beep(int note, int duration)
 #define LCD_RD PE_1
 int DPINS[] = {PB_0, PB_1, PB_2, PB_3, PB_4, PB_5, PB_6, PB_7};
 
-const int buttonPin1 = PUSH1;   //ataque
-const int buttonPin2 = PUSH2;   //ataque
-const int buttonPin3 = PA_2;
-const int buttonPin4 = PA_3;
-const int buttonPin5 = PA_4;
-const int buttonPin6 = PA_5;
-const int buttonPin7 = PA_6;
-const int buttonPin8 = PA_7;
-const int buttonPin9 = PC_5;
-const int buttonPin10 = PC_6;
-
+const int buttonPin1 = PUSH1;   //ataque1
+const int buttonPin2 = PUSH2;   //ataque2
+const int buttonPin3 = PA_6;
+const int buttonPin4 = PA_7;
+const int buttonPin5 = PC_4;
+const int buttonPin6 = PC_5;
+const int buttonPin7 = PC_6;
+const int buttonPin8 = PC_7;
 
 int contmov1 = 50;
 int contmov2 = 250;
@@ -139,7 +140,7 @@ void setup() {
   LCD_Print(text3, 20, 200, 2, 0xffff, 0x421b);
   String text4 = "Reglas:";
   LCD_Print(text4, 90, 25, 2, 0xffff, 0x421b);
-  String text5 = "Debes conectar 10 golpes.";
+  String text5 = "Debes conectar 5 golpes.";
   LCD_Print(text5, 20, 50, 1, 0xffff, 0x421b);
   String text6 = "Los golpes no cuentan con la defensa";
   LCD_Print(text6, 20, 70, 1, 0xffff, 0x421b);
@@ -156,16 +157,28 @@ void setup() {
   beep(note_a, 650);
   delay (1000);
   LCD_Clear(0x3E19);
+//-------------------------------------------------
+  //Serial.begin(9600);
+  //while (!Serial) {
+    ; // wait for serial port to connect. Needed for Leonardo only
+  //}
+  SPI.setModule(0);
 
-  
+  //Serial.print("Initializing SD card...");
+  pinMode(10, OUTPUT);
 
-  //LCD_Sprite(int x, int y, int width, int height, unsigned char bitmap[],int columns, int index, char flip, char offset);
-  //LCD_Sprite(50, 100, 18, 38, mov,2, 1, 1, 0);
+  if (!SD.begin(32)) {
+    Serial.println("initialization failed!");
+    return;
+  }
+  Serial.println("initialization done.");
 
-  //LCD_Bitmap(unsigned int x, unsigned int y, unsigned int width, unsigned int height, unsigned char bitmap[]);
-  //LCD_Bitmap(50, 160, 18, 38, inicio);
+  myFile = SD.open("/");
 
+  //printDirectory(myFile, 0);
 
+  Serial.println("done!");
+//----------------------------------------------------
   for (int x = 0; x < 319; x++) {
     LCD_Bitmap(x, 207, 16, 16, tile);
     LCD_Bitmap(x, 223, 16, 16, tile);
@@ -190,15 +203,22 @@ void setup() {
   pinMode(buttonPin6, INPUT_PULLUP);
   pinMode(buttonPin7, INPUT_PULLUP);
   pinMode(buttonPin8, INPUT_PULLUP);
-  pinMode(buttonPin9, INPUT_PULLUP);
-  pinMode(buttonPin10, INPUT_PULLUP);
   pinMode(buzzerPin,OUTPUT);
-
 }
 //***************************************************************************************************************************************
 // Loop Infinito
 //***************************************************************************************************************************************
 void loop() {
+  myFile = SD.open("graficos.txt");
+  //if (myFile) {
+      //Serial.println("Archivo:");
+      //while (myFile.available()) {
+       //Serial.write(myFile.read());
+     // }
+      //myFile.close();
+    //}else{
+    //Serial.println("error opening test.txt");
+    //}
   int boton1 = digitalRead(buttonPin1);
   int boton2 = digitalRead(buttonPin2);
   int boton3 = digitalRead(buttonPin3);
@@ -207,13 +227,9 @@ void loop() {
   int boton6 = digitalRead(buttonPin6);
   int boton7 = digitalRead(buttonPin7);
   int boton8 = digitalRead(buttonPin8);
-  int boton9 = digitalRead(buttonPin9);
-  int boton10 = digitalRead(buttonPin10);
-
-  
   //------------------Jugador1--------------------------------------------------***************************************************************************
-
-  
+  String text8 = "Presione para iniciar";
+  LCD_Print(text8, 80, 40, 1, 0xffff, 0x421b);
 // --------------------------------------------caminar hacia adelante --------------------------------------
   if (boton3 == 0) {
     if (contmov1 + 18 < contmov2) {
@@ -335,6 +351,7 @@ void loop() {
   }
 // --------------------------------------------- ataque J2 -------------------------------------------------------------------
   if (boton2 == 0) {
+    contmov2 = contmov2-15;    //utilizado para que el ataque vaya hacia adelante al atacar
     if (contmov2 < contmov1 + 18 && def1 == false) {
       golpes2 = golpes2 + 1;
       if(golpes2 == 1){
@@ -360,7 +377,8 @@ void loop() {
         //String g6 ="0";
         //LCD_Print(g6, 80, 75, 2, 0xffff, 0x421b);
       }
-    }  
+    }
+    contmov2 = contmov2+15; //para regresar a la posicion de antes  
     for (int x = 250; x < 300; x++) {
       delay(1);
       int anim7 = (x / 10) % 4;
