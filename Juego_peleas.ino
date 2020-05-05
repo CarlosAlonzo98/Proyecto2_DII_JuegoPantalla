@@ -276,6 +276,7 @@ void loop() {
   }
 // --------------------------------------------- ataque J2 -------------------------------------------------------------------
   if (boton2 == 0) {
+    contmov2 = contmov2-15;    //utilizado para que el ataque vaya hacia adelante al atacar
     if (contmov2 < contmov1 + 18 && def1 == false) {
       golpes2 = golpes2 + 1;
       if(golpes2 == 1){
@@ -301,7 +302,8 @@ void loop() {
         //String g6 ="0";
         //LCD_Print(g6, 80, 75, 2, 0xffff, 0x421b);
       }
-    }  
+    }
+    contmov2 = contmov2+15; //para regresar a la posicion de antes  
     for (int x = 250; x < 300; x++) {
       delay(1);
       int anim7 = (x / 10) % 4;
