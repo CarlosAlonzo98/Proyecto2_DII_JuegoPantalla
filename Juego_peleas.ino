@@ -33,14 +33,12 @@ int DPINS[] = {PB_0, PB_1, PB_2, PB_3, PB_4, PB_5, PB_6, PB_7};
 
 const int buttonPin1 = PUSH1;   //ataque
 const int buttonPin2 = PUSH2;   //ataque
-const int buttonPin3 = PA_2;
-const int buttonPin4 = PA_3;
-const int buttonPin5 = PA_4;
-const int buttonPin6 = PA_5;
-const int buttonPin7 = PA_7;
-const int buttonPin8 = PC_4;
-const int buttonPin9 = PC_5;
-const int buttonPin10 = PC_6;
+const int buttonPin3 = PA_6;
+const int buttonPin4 = PA_7;
+const int buttonPin5 = PC_4;
+const int buttonPin6 = PC_5;
+const int buttonPin7 = PC_6;
+const int buttonPin8 = PC_7;
 
 
 int contmov1 = 50;
@@ -51,6 +49,7 @@ bool def1 = false;
 bool def2 = false;
 int golpes1 = 0;
 int golpes2 = 0;
+int switch_var = 0;
 //***************************************************************************************************************************************
 // Functions Prototypes
 //***************************************************************************************************************************************
@@ -77,6 +76,8 @@ extern uint8_t attack2[];
 extern uint8_t attackspecial2[];
 extern uint8_t defense2[];
 
+extern uint8_t fondo[];
+
 //***************************************************************************************************************************************
 // Inicialización
 //***************************************************************************************************************************************
@@ -89,24 +90,27 @@ void setup() {
   LCD_Init();
   LCD_Clear(0x3E19);
 
-  FillRect(0, 0, 319, 206, 0x421b);
-  String text1 = "PROYECTO 2!";
-  LCD_Print(text1, 20, 100, 2, 0xffff, 0x421b);
-  String text2 = "Alex Maas";
-  LCD_Print(text2, 20, 120, 2, 0xffff, 0x421b);
-  String text3 = "Carlos Alonzo";
-  LCD_Print(text3, 20, 140, 2, 0xffff, 0x421b);
-  delay (1000);
+  LCD_Bitmap(0, 0, 320, 240, fondo);
+  delay(3000);
   LCD_Clear(0x3E19);
 
-
-
-  //LCD_Sprite(int x, int y, int width, int height, unsigned char bitmap[],int columns, int index, char flip, char offset);
-  //LCD_Sprite(50, 100, 18, 38, mov,2, 1, 1, 0);
-
-  //LCD_Bitmap(unsigned int x, unsigned int y, unsigned int width, unsigned int height, unsigned char bitmap[]);
-  //LCD_Bitmap(50, 160, 18, 38, inicio);
-
+  FillRect(0, 0, 320, 240, 0x421b);
+  String text1 = "PROYECTO 2!";
+  LCD_Print(text1, 20, 160, 2, 0xffff, 0x421b);
+  String text2 = "Alex Maas";
+  LCD_Print(text2, 20, 180, 2, 0xffff, 0x421b);
+  String text3 = "Carlos Alonzo";
+  LCD_Print(text3, 20, 200, 2, 0xffff, 0x421b);
+  String text4 = "Reglas:";
+  LCD_Print(text4, 90, 25, 2, 0xffff, 0x421b);
+  String text5 = "Debes conectar 5 golpes.";
+  LCD_Print(text5, 20, 50, 1, 0xffff, 0x421b);
+  String text6 = "Los golpes no cuentan con la defensa";
+  LCD_Print(text6, 20, 70, 1, 0xffff, 0x421b);
+  String text7 = "activa.";
+  LCD_Print(text7, 20, 80, 1, 0xffff, 0x421b);
+  delay (3000);
+  LCD_Clear(0x3E19);
 
   for (int x = 0; x < 319; x++) {
     LCD_Bitmap(x, 207, 16, 16, tile);
@@ -114,14 +118,14 @@ void setup() {
     x += 15;
   }
 
-  String title1 ="P1";
+  String title1 = "P1";
   LCD_Print(title1, 70, 50, 2, 0xffff, 0x421b);
-  String golp1_init ="0";
+  String golp1_init = "0";
   LCD_Print(golp1_init, 80, 75, 2, 0xffff, 0x421b);
 
-  String title2 ="P2";
+  String title2 = "P2";
   LCD_Print(title2, 200, 50, 2, 0xffff, 0x421b);
-  String golp2_init ="0";
+  String golp2_init = "0";
   LCD_Print(golp2_init, 210, 75, 2, 0xffff, 0x421b);
 
   pinMode(buttonPin1, INPUT_PULLUP);
@@ -132,8 +136,6 @@ void setup() {
   pinMode(buttonPin6, INPUT_PULLUP);
   pinMode(buttonPin7, INPUT_PULLUP);
   pinMode(buttonPin8, INPUT_PULLUP);
-  pinMode(buttonPin9, INPUT_PULLUP);
-  pinMode(buttonPin10, INPUT_PULLUP);
 
 }
 //***************************************************************************************************************************************
@@ -148,191 +150,306 @@ void loop() {
   int boton6 = digitalRead(buttonPin6);
   int boton7 = digitalRead(buttonPin7);
   int boton8 = digitalRead(buttonPin8);
-  int boton9 = digitalRead(buttonPin9);
-  int boton10 = digitalRead(buttonPin10);
 
-  
-  //------------------Jugador1--------------------------------------------------***************************************************************************
+  //-######################################################### Case para fases del juego #######################################
+  switch (switch_var) {
 
-  
-// --------------------------------------------caminar hacia adelante --------------------------------------
-  if (boton3 == 0) {
-    if (contmov1 + 18 < contmov2) {
-      contmov1 = contmov1 + 1;
-    }
-    else {
-      contmov1 = contmov1;
-    }
-    for (int x = 50; x < 68; x++) {
-      delay(1);
-      int anim1 = (x / 10) % 2;
-      LCD_Sprite(contmov1, 168, 18, 38, mov, 2, anim1, 0, 0);
-      //FillRect(contmov1-1, 128, 5, 40, 0x3E19);
-      V_line( contmov1 - 1, 160, 45, 0x3E19);
-    }
-  } else {
-  }
-//------------------------------------------- caminar hacia atras -----------------------------------------------
-  if (boton4 == 0) {
-    if (contmov1 == 0) {
-      contmov1 = contmov1;
-    } else {
-      contmov1 = contmov1 - 1;
-    }
-    for (int x = 50; x < 68; x++) {
-      delay(1);
-      int anim2 = (x / 10) % 2;
-      LCD_Sprite(contmov1, 168, 18, 38, mov, 2, anim2, 0, 0);
-      V_line( contmov1 + 1, 160, 45, 0x3E19);
-    }
-  } else {
-  }
-//------------------------------golpes jugador 1--------------------------------
-  if (boton1 == 0) {
-    if (contmov1 + 33 > contmov2 && def2 == false) {
-      golpes1 = golpes1 + 1;
-      if(golpes1 ==1){
-        String g1 = "1";
-        LCD_Print(g1, 80, 75, 2, 0xffff, 0x421b);  
-      }
-      if(golpes1 ==2){
-        String g2 = "2";
-        LCD_Print(g2, 80, 75, 2, 0xffff, 0x421b);
-      }
-      if(golpes1 ==3){
-        String g3= "3";
-        LCD_Print(g3, 80, 75, 2, 0xffff, 0x421b);
-      }
-      if(golpes1 ==4){
-        String g4 = "4";
-        LCD_Print(g4, 80, 75, 2, 0xffff, 0x421b);
-      }
-      if(golpes1 ==5){
-        String g5= "5";
-        LCD_Print(g5, 80, 75, 2, 0xffff, 0x421b);
-      }else{
-        //String g6 ="0";
-        //LCD_Print(g6, 80, 75, 2, 0xffff, 0x421b);
-      }
-    }
-    for (int x = 50; x < 100; x++) {
-      delay(1);
-      int anim3 = (x / 10) % 4;
-      LCD_Sprite(contmov1, 168, 33, 39, attack, 4, anim3, 0, 0);
-      V_line( contmov1 - 1, 160, 45, 0x3E19);
-    }
-  } else {
-  }
-//---------------------------------------- defensa jugador 1 ----------------------------------------------------------------------------------------------
-  if (boton5 == 0 && defensa == true) {
-    def1 = true;
-    for (int x = 0; x < 30; x++) {
-      delay(1);
-      int anim4 = (x / 10) % 12;
-      LCD_Sprite(contmov1 - 5, 168, 28, 38, defense, 9, anim4, 0, 0);
-      V_line( contmov1 - 6, 160, 45, 0x3E19);
-    }
-    defensa = false;
-  }
-  if (boton5 == 0 && defensa == false) {
-    LCD_Sprite(contmov1 - 5, 168, 28, 38, defense, 9, 8, 0, 0);
-    V_line( contmov1 - 6, 160, 45, 0x3E19);
-  }
-  else {
-    defensa = true;
-    def1 = false;
-  }
-  //---------------------------------Jugador2----------------*****************************************************************************************************
-//-----------------------------------------------caminar hacia adelante J2 ----------------------------
-  if (boton6 == 0) {
-    if (contmov2 > contmov1 + 18) {
-      contmov2 = contmov2 - 1;
-    }
-    else {
-      contmov2 = contmov2;
-    }
-    for (int x = 250; x < 300; x++) {
-      delay(1);
-      int anim5 = (x / 10) % 2;
-      LCD_Sprite(contmov2, 168, 18, 38, mov2, 2, anim5, 0, 0);
-      V_line( contmov2 + 18, 160, 45, 0x3E19);
-    }
-  } else {
-  }
-// ---------------------------------------------------- caminar hacia atras J2------------------------------------------------
-  if (boton7 == 0) {
-    if (contmov2 == 301) {
-      contmov2 = contmov2;
-    } else {
-      contmov2 = contmov2 + 1;
-    }
-    for (int x = 250; x < 300; x++) {
-      delay(1);
-      int anim6 = (x / 10) % 2;
-      LCD_Sprite(contmov2, 168, 18, 38, mov2, 2, anim6, 0, 0);
-      V_line( contmov2 - 1, 160, 45, 0x3E19);
-    }
-  } else {
-  }
-// --------------------------------------------- ataque J2 -------------------------------------------------------------------
-  if (boton2 == 0) {
-    contmov2 = contmov2-15;    //utilizado para que el ataque vaya hacia adelante al atacar
-    if (contmov2 < contmov1 + 18 && def1 == false) {
-      golpes2 = golpes2 + 1;
-      if(golpes2 == 1){
-        String g7 = "1";
-        LCD_Print(g7, 210, 75, 2, 0xffff, 0x421b);
-      }
-      if(golpes2 ==2){
-        String g8 = "2";
-        LCD_Print(g8, 210, 75, 2, 0xffff, 0x421b);
-      }
-      if(golpes2 ==3){
-        String g9= "3";
-        LCD_Print(g9, 210, 75, 2, 0xffff, 0x421b);
-      }
-      if(golpes2 ==4){
-        String g10 = "4";
-        LCD_Print(g10, 210, 75, 2, 0xffff, 0x421b);
-      }
-      if(golpes2 ==5){
-        String g11= "5";
-        LCD_Print(g11, 210, 75, 2, 0xffff, 0x421b);
-      }else{
-        //String g6 ="0";
-        //LCD_Print(g6, 80, 75, 2, 0xffff, 0x421b);
-      }
-    }
-    contmov2 = contmov2+15; //para regresar a la posicion de antes  
-    for (int x = 250; x < 300; x++) {
-      delay(1);
-      int anim7 = (x / 10) % 4;
-      LCD_Sprite(contmov2, 168, 33, 39, attack2, 4, anim7, 0, 0);
-      V_line( contmov2 - 1, 160, 45, 0x3E19);
-    }
-  } else {
-  }
-// ------------------------------------------------- defensa J2 ------------------------------------------------------------------------
-  if (boton8 == 0 && defensa2 == true) {
-    def2 = true;
-    for (int x = 0; x < 30; x++) {
-      delay(1);
-      int anim8 = (x / 10) % 12;
-      LCD_Sprite(contmov2 , 168, 28, 38, defense2, 9, anim8, 1, 0);
-      V_line( contmov2 - 1, 160, 45, 0x3E19);
-    }
-    defensa2 = false;
-  }
-  if (boton8 == 0 && defensa2 == false) {
-    LCD_Sprite(contmov2, 168, 28, 38, defense2, 9, 8, 1, 0);
-    V_line( contmov2 - 1, 160, 45, 0x3E19);
-  }
-  else {
-    defensa2 = true;
-    def2 = false;
-  }
+    //############## fase que pregunta si se quiere empezar el juego##############
 
-}
+    case 0: {
+        String text10 = "Presionar boton izquierdo P1";
+        LCD_Print(text10, 10, 10, 1, 0xffff, 0x421b);
+        String text11 = "para comenzar";
+        LCD_Print(text11, 10, 25, 1, 0xffff, 0x421b);
+
+        if (boton3 == 0) {        //Funcion para comenzar el juego
+          switch_var = 1;
+          delay(500);
+          FillRect(0, 0, 270, 40, 0x3E19);
+        }
+      }
+      break;
+
+    //##################################################################### fase del juego ##############################################
+    case 1: {
+        //------------------Jugador1--------------------------------------------------***************************************************************************
+
+        // --------------------------------------------caminar hacia adelante --------------------------------------
+        if (boton3 == 0) {
+          if (contmov1 + 18 < contmov2) {
+            contmov1 = contmov1 + 1;
+          }
+          else {
+            contmov1 = contmov1;
+          }
+          for (int x = 50; x < 68; x++) {
+            delay(1);
+            int anim1 = (x / 10) % 2;
+            LCD_Sprite(contmov1, 168, 18, 38, mov, 2, anim1, 0, 0);
+            //FillRect(contmov1-1, 128, 5, 40, 0x3E19);
+            V_line( contmov1 - 1, 160, 45, 0x3E19);
+          }
+        } else {
+        }
+        //------------------------------------------- caminar hacia atras -----------------------------------------------
+        if (boton4 == 0) {
+          if (contmov1 == 0) {
+            contmov1 = contmov1;
+          } else {
+            contmov1 = contmov1 - 1;
+          }
+          for (int x = 50; x < 68; x++) {
+            delay(1);
+            int anim2 = (x / 10) % 2;
+            LCD_Sprite(contmov1, 168, 18, 38, mov, 2, anim2, 0, 0);
+            V_line( contmov1 + 1, 160, 45, 0x3E19);
+          }
+        } else {
+        }
+        //------------------------------golpes jugador 1--------------------------------
+        if (boton1 == 0) {
+          if (contmov1 + 33 > contmov2 && def2 == false) {
+            golpes1 = golpes1 + 1;
+            if (golpes1 == 1) {
+              String g1 = "1";
+              LCD_Print(g1, 80, 75, 2, 0xffff, 0x421b);
+            }
+            if (golpes1 == 2) {
+              String g2 = "2";
+              LCD_Print(g2, 80, 75, 2, 0xffff, 0x421b);
+            }
+            if (golpes1 == 3) {
+              String g3 = "3";
+              LCD_Print(g3, 80, 75, 2, 0xffff, 0x421b);
+            }
+            if (golpes1 == 4) {
+              String g4 = "4";
+              LCD_Print(g4, 80, 75, 2, 0xffff, 0x421b);
+            }
+            if (golpes1 == 5) {
+              String g5 = "5";
+              LCD_Print(g5, 80, 75, 2, 0xffff, 0x421b);
+              delay(200);           //delay para que se observe el cambio en contador de 4 a 5 golpes acertados
+              switch_var = 2;       //Variable para mostrar que P1 gano el juego
+              LCD_Clear(0x3E19);
+            } else {
+              //String g6 ="0";
+              //LCD_Print(g6, 80, 75, 2, 0xffff, 0x421b);
+            }
+          }
+          if(golpes1 != 5){
+          for (int x = 50; x < 100; x++) {
+            delay(1);
+            int anim3 = (x / 10) % 4;
+            LCD_Sprite(contmov1, 168, 33, 39, attack, 4, anim3, 0, 0);
+            V_line( contmov1 - 1, 160, 45, 0x3E19);
+          }
+          }
+        } else {
+        }
+        //---------------------------------------- defensa jugador 1 ----------------------------------------------------------------------------------------------
+        if (boton5 == 0 && defensa == true) {
+          def1 = true;
+          for (int x = 0; x < 30; x++) {
+            delay(1);
+            int anim4 = (x / 10) % 12;
+            LCD_Sprite(contmov1 - 5, 168, 28, 38, defense, 9, anim4, 0, 0);
+            V_line( contmov1 - 6, 160, 45, 0x3E19);
+          }
+          defensa = false;
+        }
+        if (boton5 == 0 && defensa == false) {
+          LCD_Sprite(contmov1 - 5, 168, 28, 38, defense, 9, 8, 0, 0);
+          V_line( contmov1 - 6, 160, 45, 0x3E19);
+        }
+        else {
+          defensa = true;
+          def1 = false;
+        }
+        //---------------------------------Jugador2----------------*****************************************************************************************************
+        //-----------------------------------------------caminar hacia adelante J2 ----------------------------
+        if (boton6 == 0) {
+          if (contmov2 > contmov1 + 18) {
+            contmov2 = contmov2 - 1;
+          }
+          else {
+            contmov2 = contmov2;
+          }
+          for (int x = 250; x < 300; x++) {
+            delay(1);
+            int anim5 = (x / 10) % 2;
+            LCD_Sprite(contmov2, 168, 18, 38, mov2, 2, anim5, 0, 0);
+            V_line( contmov2 + 18, 160, 45, 0x3E19);
+          }
+        } else {
+        }
+        // ---------------------------------------------------- caminar hacia atras J2------------------------------------------------
+        if (boton7 == 0) {
+          if (contmov2 == 301) {
+            contmov2 = contmov2;
+          } else {
+            contmov2 = contmov2 + 1;
+          }
+          for (int x = 250; x < 300; x++) {
+            delay(1);
+            int anim6 = (x / 10) % 2;
+            LCD_Sprite(contmov2, 168, 18, 38, mov2, 2, anim6, 0, 0);
+            V_line( contmov2 - 1, 160, 45, 0x3E19);
+          }
+        } else {
+        }
+        // --------------------------------------------- ataque J2 -------------------------------------------------------------------
+        if (boton2 == 0) {
+          contmov2 = contmov2 - 15;  //utilizado para que el ataque vaya hacia adelante al atacar
+          if (contmov2 < contmov1 + 18 && def1 == false) {
+            golpes2 = golpes2 + 1;
+            if (golpes2 == 1) {
+              String g7 = "1";
+              LCD_Print(g7, 210, 75, 2, 0xffff, 0x421b);
+            }
+            if (golpes2 == 2) {
+              String g8 = "2";
+              LCD_Print(g8, 210, 75, 2, 0xffff, 0x421b);
+            }
+            if (golpes2 == 3) {
+              String g9 = "3";
+              LCD_Print(g9, 210, 75, 2, 0xffff, 0x421b);
+            }
+            if (golpes2 == 4) {
+              String g10 = "4";
+              LCD_Print(g10, 210, 75, 2, 0xffff, 0x421b);
+            }
+            if (golpes2 == 5) {
+              String g11 = "5";
+              LCD_Print(g11, 210, 75, 2, 0xffff, 0x421b);
+              delay(200);             //Delay para que se observe el cambio del contador de 4 a 5 golpes acertados
+              switch_var = 3;         //Aqui se acaba el juego porque gana P2
+              LCD_Clear(0x3E19);
+            } else {
+              //String g6 ="0";
+              //LCD_Print(g6, 80, 75, 2, 0xffff, 0x421b);
+            }
+          }
+          contmov2 = contmov2 + 15; //para regresar a la posicion de antes
+          
+          if (golpes2 != 5) {
+            for (int x = 250; x < 300; x++) {
+              delay(1);
+              int anim7 = (x / 10) % 4;
+              LCD_Sprite(contmov2, 168, 33, 39, attack2, 4, anim7, 0, 0);
+              V_line( contmov2 - 1, 160, 45, 0x3E19);
+            }
+          }
+        } else {
+        }
+        // ------------------------------------------------- defensa J2 ------------------------------------------------------------------------
+        if (boton8 == 0 && defensa2 == true) {
+          def2 = true;
+          for (int x = 0; x < 30; x++) {
+            delay(1);
+            int anim8 = (x / 10) % 12;
+            LCD_Sprite(contmov2 , 168, 28, 38, defense2, 9, anim8, 1, 0);
+            V_line( contmov2 - 1, 160, 45, 0x3E19);
+          }
+          defensa2 = false;
+        }
+        if (boton8 == 0 && defensa2 == false) {
+          LCD_Sprite(contmov2, 168, 28, 38, defense2, 9, 8, 1, 0);
+          V_line( contmov2 - 1, 160, 45, 0x3E19);
+        }
+        else {
+          defensa2 = true;
+          def2 = false;
+        }
+      }
+      break;
+
+    //############################################################ Fase que presenta al ganador P1 ######################################################
+    case 2: {
+
+        String text12 = "Ganador: P1";
+        LCD_Print(text12, 95, 70, 1, 0xffff, 0x421b);
+        String text13 = "Felicidades!";
+        LCD_Print(text13, 90, 90, 1, 0xffff, 0x421b);
+
+        String text14 = "Para jugar de nuevo presione:";
+        LCD_Print(text14, 20, 180, 1, 0xffff, 0x421b);
+        String text15 = "boton izq. P1";
+        LCD_Print(text15, 20, 200, 1, 0xffff, 0x421b);
+
+        if (boton3 == 0) {
+          switch_var = 0;   //variable para regresar al inicio del juego despues de las reglas
+          delay(500);       //delay para cambiar por antirrebote despues
+          LCD_Clear(0x3E19);
+
+          for (int x = 0; x < 319; x++) {
+            LCD_Bitmap(x, 207, 16, 16, tile);
+            LCD_Bitmap(x, 223, 16, 16, tile);
+            x += 15;
+          }
+
+          String title1 = "P1";
+          LCD_Print(title1, 70, 50, 2, 0xffff, 0x421b);
+          String golp1_init = "0";
+          LCD_Print(golp1_init, 80, 75, 2, 0xffff, 0x421b);
+
+          String title2 = "P2";
+          LCD_Print(title2, 200, 50, 2, 0xffff, 0x421b);
+          String golp2_init = "0";
+          LCD_Print(golp2_init, 210, 75, 2, 0xffff, 0x421b);
+          contmov1 = 50;
+          contmov2 = 250;
+        }
+      }
+      break;
+
+    //############################################################ Fase que presenta al ganador P2 ######################################################
+    case 3: {
+        String text16 = "Ganador: P2";
+        LCD_Print(text16, 95, 70, 1, 0xffff, 0x421b);
+        String text17 = "Felicidades!";
+        LCD_Print(text17, 90, 90, 1, 0xffff, 0x421b);
+
+        String text18 = "Para jugar de nuevo presione:";
+        LCD_Print(text18, 20, 180, 1, 0xffff, 0x421b);
+        String text19 = "boton izq. P2";
+        LCD_Print(text19, 20, 200, 1, 0xffff, 0x421b);
+
+        if (boton6 == 0) {
+          switch_var = 0;   //variable para regresar al inicio del juego despues de las reglas
+          delay(500);       //delay para cambiar por antirrebote despues
+          LCD_Clear(0x3E19);
+
+          for (int x = 0; x < 319; x++) {
+            LCD_Bitmap(x, 207, 16, 16, tile);
+            LCD_Bitmap(x, 223, 16, 16, tile);
+            x += 15;
+          }
+
+          String title1 = "P1";
+          LCD_Print(title1, 70, 50, 2, 0xffff, 0x421b);
+          String golp1_init = "0";
+          LCD_Print(golp1_init, 80, 75, 2, 0xffff, 0x421b);
+
+          String title2 = "P2";
+          LCD_Print(title2, 200, 50, 2, 0xffff, 0x421b);
+          String golp2_init = "0";
+          LCD_Print(golp2_init, 210, 75, 2, 0xffff, 0x421b);
+
+          contmov1 = 50;
+          contmov2 = 250;
+        }
+      }
+      break;
+
+    //###################################################### case default ##################################################################
+    default: {
+        switch_var = 0;         //Regresa al comienzo del juego por si hubo algun error
+      }
+      break;
+
+  }//Esta llave cierra la funcion switch
+}   //Llave que cierra el loop principal
 
 //***************************************************************************************************************************************
 // Función para inicializar LCD
