@@ -4,6 +4,9 @@
    Adaptación, migración y creación de nuevas funciones: Pablo Mazariegos y José Morales
    Con ayuda de: José Guerra
    IE3027: Electrónica Digital 2 - 2019
+   Proyecto 2
+   Alex Maas        #17146
+   Carlos Alonzo    #17241
 */
 //***************************************************************************************************************************************
 #include <stdint.h>
@@ -29,7 +32,9 @@
 
 File myFile;
 
-//-----------------------Notas---------------------------
+//**************************************************************************************************
+//Definicion de Notas
+//**************************************************************************************************
 const int e=329;
 const int f=349;
 const int fS=369;
@@ -38,16 +43,9 @@ const int a=440;
 const int b=494;
 const int c=523;
 int Tempo=(60000/128)*4;
-//-----------------------------------------------------
-int buzzerPin = PF_1;
-void beep(int note, int duration)
-{
- tone(buzzerPin, note,Tempo/duration);
- delay(Tempo/duration);
- noTone(buzzerPin);
- delay(50);
-}
-//--------------------------------------------------------
+int buzzerPin = PF_0;
+//****************************************************************************************************
+
 #define LCD_RST PD_0
 #define LCD_CS PD_1
 #define LCD_RS PD_2
@@ -55,14 +53,18 @@ void beep(int note, int duration)
 #define LCD_RD PE_1
 int DPINS[] = {PB_0, PB_1, PB_2, PB_3, PB_4, PB_5, PB_6, PB_7};
 
-const int buttonPin1 = PUSH1;   //ataque1
-const int buttonPin2 = PUSH2;   //ataque2
-const int buttonPin3 = PA_6;
-const int buttonPin4 = PA_7;
-const int buttonPin5 = PC_4;
-const int buttonPin6 = PC_5;
-const int buttonPin7 = PC_6;
-const int buttonPin8 = PC_7;
+//*****************************************************************************************************
+//Definicion de botones
+//***************************************************************************************************
+const int buttonPin3 = PA_6;    //ADELANTE J1
+const int buttonPin4 = PA_7;    //ATRAS J1
+const int buttonPin1 = PF_4;    //ATAQUE J1
+const int buttonPin5 = PE_4;    //DEFENSA J1
+
+const int buttonPin6 = PE_5;    //ADELANTE J2
+const int buttonPin7 = PE_2;    //ATRAS J2
+const int buttonPin2 = PE_3;   //ATAQUE J2
+const int buttonPin8 = PF_1;    //DEFENSA J2
 int musica;
 int contmov1 = 50;
 int contmov2 = 250;
@@ -73,7 +75,8 @@ bool def2 = false;
 int golpes1 = 0;
 int golpes2 = 0;
 int switch_var = 0;
-unsigned char campeon[]={0}; 
+//******************************************************************************************************************************
+
 //***************************************************************************************************************************************
 // Functions Prototypes
 //***************************************************************************************************************************************
@@ -88,6 +91,7 @@ void Rect(unsigned int x, unsigned int y, unsigned int w, unsigned int h, unsign
 void FillRect(unsigned int x, unsigned int y, unsigned int w, unsigned int h, unsigned int c);
 void LCD_Print(String text, int x, int y, int fontSize, int color, int background);
 
+void beep(int note, int duration);
 void LCD_Bitmap(unsigned int x, unsigned int y, unsigned int width, unsigned int height, unsigned char bitmap[]);
 void LCD_Sprite(int x, int y, int width, int height, unsigned char bitmap[], int columns, int index, char flip, char offset);
 void LCD_SD_Bitmap(unsigned int x, unsigned int y, unsigned int width, unsigned int height, char * direccion);
@@ -99,7 +103,6 @@ extern uint8_t defense[];
 extern uint8_t mov2[];
 extern uint8_t attack2[];
 extern uint8_t defense2[];
-
 extern uint8_t fondo[];
 //***************************************************************************************************************************************
 // Inicialización
@@ -132,11 +135,13 @@ void setup() {
   LCD_Print(text6, 20, 70, 1, 0xffff, 0x421b);
   String text7 = "activa.";
   LCD_Print(text7, 20, 80, 1, 0xffff, 0x421b);
-  String text20 = "Recuarda divertirte.";
+  String text20 = "Recuerda siempre divertirte.";
   LCD_Print(text20, 20, 100, 1, 0xffff, 0x421b);
   ThirdLine();
   LCD_Clear(0x3E19);
-//-------------------------------------------------
+//*******************************************************************************************
+//Conectar con la SD
+//*******************************************************************************************
   SPI.setModule(0);
   Serial.print("Initializing SD card...");
   pinMode(10, OUTPUT);
@@ -146,27 +151,12 @@ void setup() {
   }
   Serial.println("initialization done.");
   myFile = SD.open("/");
-/*
-  Serial.print("Initializing SD card...");
-  pinMode(10, OUTPUT);
-  if (!SD.begin(32)) {
-    Serial.println("initialization failed!");
-    return;
-  }
-  Serial.println("initialization done.");
-  imagen = SD.open("graficos.txt");
-  if (imagen){
-    Serial.println("imagen lista");
-    uint8_t campeon[] ={imagen.read()};
-    Serial.println("done");
-  }*/
-//----------------------------------------------------
+//***********************************************************************************************
   for (int x = 0; x < 319; x++) {
     LCD_Bitmap(x, 207, 16, 16, tile);
     LCD_Bitmap(x, 223, 16, 16, tile);
     x += 15;
   }
-
   String title1 ="P1";
   LCD_Print(title1, 70, 50, 2, 0xffff, 0x421b);
   String golp1_init ="0";
@@ -201,9 +191,11 @@ void loop() {
   int boton7 = digitalRead(buttonPin7);
   int boton8 = digitalRead(buttonPin8);
 
-//-######################################################### Case para fases del juego #######################################
+//***********************************************************************************
+//Case para las fases del juego 
+//************************************************************************************
   switch (switch_var) {
-//############## fase que pregunta si se quiere empezar el juego##############
+//------------------------------fase que pregunta si se quiere empezar el juego-------------------------------
     case 0: {
         String text10 = "Presionar boton izquierdo P1";
         LCD_Print(text10, 10, 10, 1, 0xffff, 0x421b);
@@ -217,9 +209,13 @@ void loop() {
         }
       }
       break;
-//##################################################################### fase del juego ##############################################
+//**********************************************************************************************
+//fase 1 del juego 
+//******************************************************************************************************************
     case 1: {
-//------------------Jugador1--------------------------------------------------***************************************************************************
+//***************************************************************************************************
+// Accciones del Jugador 1
+//****************************************************************************************************
 // --------------------------------------------caminar hacia adelante --------------------------------------
         if (boton3 == 0) {
           if (contmov1 + 32 < contmov2) {
@@ -252,7 +248,7 @@ void loop() {
           }
         } else {
         }
-//------------------------------golpes jugador 1--------------------------------
+//-----------------------------------------golpes jugador 1--------------------------------------------
         if (boton1 == 0) {
           if (contmov1 + 33 > contmov2 && def2 == false) {
             golpes1 = golpes1 + 1;
@@ -313,7 +309,11 @@ void loop() {
           defensa = true;
           def1 = false;
         }
-//---------------------------------Jugador2----------------*****************************************************************************************************
+//**************************************************************************************************************************************
+
+//*************************************************************************************************************************************
+//Accciones del Jugador 2
+//*************************************************************************************************************************************
 //-----------------------------------------------caminar hacia adelante J2 ----------------------------
         if (boton6 == 0) {
           if (contmov2 > contmov1 + 32) {
@@ -411,15 +411,17 @@ void loop() {
         }
       }
       break;
+//********************************************************************************************************************************************
 
-//############################################################ Fase que presenta al ganador P1 ######################################################
+//*****************************************************************************************************************************************
+// Fase que presenta al ganador P1
+//**************************************************************************************************************************************** 
     case 2: {
         String text12 = "Ganador: P1";
         LCD_Print(text12, 95, 120, 1, 0xffff, 0x421b);
         String text13 = "Felicidades!";
         LCD_Print(text13, 90, 140, 1, 0xffff, 0x421b);
-        LCD_SD_Bitmap(70,0, 110, 121, "graficos.txt");
-        //LCD_Bitmap(0, 0, 110, 121, vegueta);
+        LCD_SD_Bitmap(80,0, 110, 121, "graficos.txt");
         if (musica ==0){
          FiftthLine(); 
         }else if (musica == 1){
@@ -428,19 +430,15 @@ void loop() {
           String text15 = "boton izq. P1";
           LCD_Print(text15, 20, 200, 1, 0xffff, 0x421b); 
         }
-        
-
         if (boton3 == 0) {
           switch_var = 0;   //variable para regresar al inicio del juego despues de las reglas
           delay(500);       //delay para cambiar por antirrebote despues
           LCD_Clear(0x3E19);
-
           for (int x = 0; x < 319; x++) {
             LCD_Bitmap(x, 207, 16, 16, tile);
             LCD_Bitmap(x, 223, 16, 16, tile);
             x += 15;
           }
-
           String title1 = "P1";
           LCD_Print(title1, 70, 50, 2, 0xffff, 0x421b);
           String golp1_init = "0";
@@ -455,13 +453,18 @@ void loop() {
         }
       }
       break;
-//############################################################ Fase que presenta al ganador P2 ######################################################
+//**************************************************************************************************************************************************
+
+
+//*****************************************************************************************************************************************
+// Fase que presenta al ganador P2
+//**************************************************************************************************************************************** 
     case 3: {
         String text16 = "Ganador: P2";
         LCD_Print(text16, 95, 120, 1, 0xffff, 0x421b);
         String text17 = "Felicidades!";
         LCD_Print(text17, 90, 140, 1, 0xffff, 0x421b);
-        LCD_SD_Bitmap(70,0, 110, 121, "graficos.txt");
+        LCD_SD_Bitmap(80,0, 110, 121, "graficos.txt");
         if (musica==0){
          FiftthLine(); 
         }else if (musica==1){
@@ -470,19 +473,15 @@ void loop() {
           String text19 = "boton izq. P2";
           LCD_Print(text19, 20, 200, 1, 0xffff, 0x421b);
         }
-
         if (boton6 == 0) {
           switch_var = 0;   //variable para regresar al inicio del juego despues de las reglas
           delay(500);       //delay para cambiar por antirrebote despues
-          //ForthLine();
           LCD_Clear(0x3E19);
-
           for (int x = 0; x < 319; x++) {
             LCD_Bitmap(x, 207, 16, 16, tile);
             LCD_Bitmap(x, 223, 16, 16, tile);
             x += 15;
           }
-
           String title1 = "P1";
           LCD_Print(title1, 70, 50, 2, 0xffff, 0x421b);
           String golp1_init = "0";
@@ -498,15 +497,21 @@ void loop() {
         }
       }
       break;
-//###################################################### case default ##################################################################
+//**************************************************************************************************************************
+
+//*****************************************************************************************************************************************
+// case default
+//****************************************************************************************************************************************
     default: {
         switch_var = 0;         //Regresa al comienzo del juego por si hubo algun error
       }
       break;
-
   }//Esta llave cierra la funcion switch
-  
-}
+}//Llave cierra del Loop
+//****************************************************************************************************************************************
+
+//*************************************************************************************************************************************
+//Funciones de la musica
 //**************************************************************************************************************************************
 void firstLine(){
  beep(g, 4);
@@ -664,6 +669,19 @@ void FiftthLine() {
  //-----------------
  musica=1;
 }
+//*************************************************************************************************
+//Funcion para reproducir 
+//************************************************************************************************
+void beep(int note, int duration)
+{
+ tone(buzzerPin, note,Tempo/duration);
+ delay(Tempo/duration);
+ noTone(buzzerPin);
+ delay(50);
+}
+//***********************************************************************************************
+//********************************************************************************************************************************
+//Funciones para la SD_Bitmap
 //*********************************************************************************************************************************
 unsigned char Char_to_uChar(char letra){
   unsigned char num;
