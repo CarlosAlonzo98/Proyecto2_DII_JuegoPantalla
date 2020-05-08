@@ -65,9 +65,9 @@ const int buttonPin6 = PE_5;    //ADELANTE J2
 const int buttonPin7 = PE_2;    //ATRAS J2
 const int buttonPin2 = PE_3;   //ATAQUE J2
 const int buttonPin8 = PF_1;    //DEFENSA J2
-int musica;
-int contmov1 = 50;
-int contmov2 = 250;
+int musica = 0;
+int contmov1 = 100;
+int contmov2 = 200;
 bool defensa = true;
 bool defensa2 = true;
 bool def1 = false;
@@ -455,8 +455,11 @@ void loop() {
           LCD_Print(title2, 200, 50, 2, 0xffff, 0x421b);
           String golp2_init = "0";
           LCD_Print(golp2_init, 210, 75, 2, 0xffff, 0x421b);
-          contmov1 = 50;
-          contmov2 = 250;
+          contmov1 = 100;
+          contmov2 = 200;
+          musica = 0;
+          golpes1= 0;
+          golpes2 =0;
         }
       }
       break;
@@ -499,8 +502,11 @@ void loop() {
           String golp2_init = "0";
           LCD_Print(golp2_init, 210, 75, 2, 0xffff, 0x421b);
 
-          contmov1 = 50;
-          contmov2 = 250;
+          contmov1 = 100;
+          contmov2 = 200;
+          musica = 0;
+          golpes1= 0;
+          golpes2 =0;
         }
       }
       break;
