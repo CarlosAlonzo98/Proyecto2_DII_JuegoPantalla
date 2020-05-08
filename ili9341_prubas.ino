@@ -117,7 +117,7 @@ void setup() {
   LCD_Clear(0x3E19);
 
   LCD_Bitmap(0, 0, 320, 240, fondo);
-  firstLine();
+  //firstLine();
   LCD_Clear(0x3E19);
 
   FillRect(0, 0, 320, 240, 0x421b);
@@ -137,7 +137,7 @@ void setup() {
   LCD_Print(text7, 20, 80, 1, 0xffff, 0x421b);
   String text20 = "Recuerda siempre divertirte.";
   LCD_Print(text20, 20, 100, 1, 0xffff, 0x421b);
-  ThirdLine();
+  //ThirdLine();
   LCD_Clear(0x3E19);
 //*******************************************************************************************
 //Conectar con la SD
@@ -218,8 +218,10 @@ void loop() {
 //****************************************************************************************************
 // --------------------------------------------caminar hacia adelante --------------------------------------
         if (boton3 == 0) {
-          if (contmov1 + 32 < contmov2) {
+          if (contmov1 + 33 < contmov2) {
             contmov1 = contmov1 + 1;
+            FillRect(contmov1 -19, 200, 18, 6, 0x3E19);     //( coordenada x, cordenada y, ancho, alto, color)
+            FillRect(contmov1 +19, 160, 8, 30, 0x3E19);
           }
           else {
             contmov1 = contmov1;
@@ -228,8 +230,8 @@ void loop() {
             delay(1);
             int anim1 = (x / 10) % 2;
             LCD_Sprite(contmov1, 168, 18, 38, mov, 2, anim1, 0, 0);
-            //FillRect(contmov1-1, 128, 5, 40, 0x3E19);
             V_line( contmov1 - 1, 160, 45, 0x3E19);
+            
           }
         } else {
         }
@@ -239,6 +241,8 @@ void loop() {
             contmov1 = contmov1;
           } else {
             contmov1 = contmov1 - 1;
+            FillRect(contmov1 -19, 200, 18, 6, 0x3E19);     //( coordenada x, cordenada y, ancho, alto, color)
+            FillRect(contmov1 +18, 160, 8, 47, 0x3E19);
           }
           for (int x = 50; x < 68; x++) {
             delay(1);
@@ -250,7 +254,7 @@ void loop() {
         }
 //-----------------------------------------golpes jugador 1--------------------------------------------
         if (boton1 == 0) {
-          if (contmov1 + 33 > contmov2 && def2 == false) {
+          if (contmov1 + 34 > contmov2 && def2 == false) {
             golpes1 = golpes1 + 1;
             if (golpes1 == 1) {
               String g1 = "1";
@@ -316,8 +320,10 @@ void loop() {
 //*************************************************************************************************************************************
 //-----------------------------------------------caminar hacia adelante J2 ----------------------------
         if (boton6 == 0) {
-          if (contmov2 > contmov1 + 32) {
+          if (contmov2 > contmov1 + 33) {
             contmov2 = contmov2 - 1;
+            FillRect(contmov2 +16, 170, 15, 37, 0x3E19);     //( coordenada x, cordenada y, ancho, alto, color)
+           // FillRect(contmov1 -19, 160, 8, 30, 0x3E19);
           }
           else {
             contmov2 = contmov2;
@@ -326,7 +332,7 @@ void loop() {
             delay(1);
             int anim5 = (x / 10) % 2;
             LCD_Sprite(contmov2, 168, 18, 38, mov2, 2, anim5, 0, 0);
-            V_line( contmov2 + 18, 160, 45, 0x3E19);
+            //V_line( contmov2 + 18, 160, 45, 0x3E19);
           }
         } else {
         }
@@ -336,6 +342,7 @@ void loop() {
             contmov2 = contmov2;
           } else {
             contmov2 = contmov2 + 1;
+            FillRect(contmov2 +16, 170, 15, 37, 0x3E19);     //( coordenada x, cordenada y, ancho, alto, color)
           }
           for (int x = 250; x < 300; x++) {
             delay(1);
@@ -581,7 +588,7 @@ void ThirdLine() {
  beep(g, 16);
  beep(a, 16);
 //-----------------
-   beep(b, 8);
+ beep(b, 8);
  beep(a, 8);    
  beep(g, 8);
  beep(fS, 8); //sharp
@@ -590,17 +597,13 @@ void ThirdLine() {
  //-----------------
  beep(c, 1);
  //-----------------
- //beep(c, 1);
  //-----------------
  beep(g, 4);
- delay(Tempo/4);
  beep(b, 16);
  beep(a, 16);
  beep(b, 4);    
  beep(e, 4);
- //-----------------
- delay(Tempo/8);
- delay(Tempo/4);
+ //----------------
  beep(c, 16);
  beep(b, 16);
  beep(c, 8);
