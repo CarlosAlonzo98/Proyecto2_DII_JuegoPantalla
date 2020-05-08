@@ -117,7 +117,7 @@ void setup() {
   LCD_Clear(0x3E19);
 
   LCD_Bitmap(0, 0, 320, 240, fondo);
-  //firstLine();
+  firstLine();
   LCD_Clear(0x3E19);
 
   FillRect(0, 0, 320, 240, 0x421b);
@@ -137,7 +137,7 @@ void setup() {
   LCD_Print(text7, 20, 80, 1, 0xffff, 0x421b);
   String text20 = "Recuerda siempre divertirte.";
   LCD_Print(text20, 20, 100, 1, 0xffff, 0x421b);
-  //ThirdLine();
+  ThirdLine();
   LCD_Clear(0x3E19);
 //*******************************************************************************************
 //Conectar con la SD
@@ -218,10 +218,10 @@ void loop() {
 //****************************************************************************************************
 // --------------------------------------------caminar hacia adelante --------------------------------------
         if (boton3 == 0) {
-          if (contmov1 + 33 < contmov2) {
+          if (contmov1 + 32 < contmov2) {
             contmov1 = contmov1 + 1;
             FillRect(contmov1 -19, 200, 18, 6, 0x3E19);     //( coordenada x, cordenada y, ancho, alto, color)
-            FillRect(contmov1 +19, 160, 8, 30, 0x3E19);
+            FillRect(contmov1 +19, 160, 9, 30, 0x3E19);
           }
           else {
             contmov1 = contmov1;
@@ -254,7 +254,7 @@ void loop() {
         }
 //-----------------------------------------golpes jugador 1--------------------------------------------
         if (boton1 == 0) {
-          if (contmov1 + 34 > contmov2 && def2 == false) {
+          if (contmov1 + 33 > contmov2 && def2 == false) {
             golpes1 = golpes1 + 1;
             if (golpes1 == 1) {
               String g1 = "1";
@@ -355,7 +355,7 @@ void loop() {
 // --------------------------------------------- ataque J2 -------------------------------------------------------------------
         if (boton2 == 0) {
           contmov2 = contmov2 - 15;  //utilizado para que el ataque vaya hacia adelante al atacar
-          if (contmov2 < contmov1 + 18 && def1 == false) {
+          if (contmov2 < contmov1 + 35 && def1 == false) {
             golpes2 = golpes2 + 1;
             if (golpes2 == 1) {
               String g7 = "1";
@@ -428,7 +428,7 @@ void loop() {
         LCD_Print(text12, 95, 120, 1, 0xffff, 0x421b);
         String text13 = "Felicidades!";
         LCD_Print(text13, 90, 140, 1, 0xffff, 0x421b);
-        LCD_SD_Bitmap(80,0, 110, 121, "graficos.txt");
+        LCD_SD_Bitmap(85,0, 110, 121, "graficos.txt");
         if (musica ==0){
          FiftthLine(); 
         }else if (musica == 1){
@@ -471,7 +471,7 @@ void loop() {
         LCD_Print(text16, 95, 120, 1, 0xffff, 0x421b);
         String text17 = "Felicidades!";
         LCD_Print(text17, 90, 140, 1, 0xffff, 0x421b);
-        LCD_SD_Bitmap(80,0, 110, 121, "graficos.txt");
+        LCD_SD_Bitmap(85,0, 110, 121, "graficos.txt");
         if (musica==0){
          FiftthLine(); 
         }else if (musica==1){
@@ -701,7 +701,7 @@ void LCD_SD_Bitmap(unsigned int x, unsigned int y, unsigned int width, unsigned 
   myFile = SD.open("graficos.txt");
   uint16_t n = 0;
   uint16_t dimension = width*height*2;
-  unsigned char vegueta[dimension] = {};
+  unsigned char imagen[dimension] = {};
   if (myFile) {
     // read from the file until there's nothing else in it:
     while (myFile.available()) {
@@ -718,7 +718,7 @@ void LCD_SD_Bitmap(unsigned int x, unsigned int y, unsigned int width, unsigned 
           numero = numero + digito;
         }
       }
-      vegueta[n] = numero;
+      imagen[n] = numero;
       n ++;
     }
     // close the file:
@@ -727,7 +727,7 @@ void LCD_SD_Bitmap(unsigned int x, unsigned int y, unsigned int width, unsigned 
     // if the file didn't open, print an error:
     Serial.println("error opening ");
   }
-   LCD_Bitmap(x,y,width,height,vegueta);
+   LCD_Bitmap(x,y,width,height,imagen);
 }
 //***************************************************************************************************************************************
 // Función para inicializar LCD
